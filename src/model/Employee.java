@@ -6,6 +6,10 @@ public class Employee {
     private String department;
     private  int salary;
     private String email;
+    //private LocalDate hireDate;
+
+    public Employee() {
+    }
 
     public Employee(int id, String name, String department, int salary, String email) {
         super();
@@ -66,5 +70,4 @@ public class Employee {
                 ", email='" + email + '\'' +
                 '}';
     }
-
 }

@@ -6,6 +6,7 @@ import model.Employee;
 import java.util.List;
 
 public class EmployeeManagerFile implements EmployeeManager {
+
     @Override
     public List<Employee> getAllEmployees() {
         return null;
@@ -17,22 +18,22 @@ public class EmployeeManagerFile implements EmployeeManager {
     }
 
     @Override
-    public boolean createEmployee(Employee empl) {
+    public boolean addEmployee(Employee employee) {
         return false;
     }
 
     @Override
-    public boolean deleteEmployee(int id) {
+    public boolean removeEmployeeById(int id) {
         return false;
     }
 
     @Override
-    public boolean updateEmployee(Employee empl) {
+    public boolean updateEmployee(Employee employee) {
         return false;
     }
 
     @Override
-    public List<Employee> getEmployeesByDepartment(String dept) {
+    public List<Employee> getEmployeesByDepartment(String department) {
         return null;
     }
 }
