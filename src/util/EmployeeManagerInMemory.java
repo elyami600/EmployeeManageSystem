@@ -5,10 +5,7 @@ import Exeption.EmployeeNotFoundException;
 import model.Employee;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class EmployeeManagerInMemory implements  EmployeeManager  {
@@ -16,8 +13,6 @@ public class EmployeeManagerInMemory implements  EmployeeManager  {
     private static int idCounter = 1;
     private static List<Employee> employeeList = new ArrayList<Employee>();
 
-    private  static final Pattern EMAIL_PATTER = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
-    private static  Set<String> uniqueEmail = new HashSet<>();
 
     static {
         employeeList.add(new Employee(idCounter++, "Tom", "HR", 50000, "tom@email.com"));

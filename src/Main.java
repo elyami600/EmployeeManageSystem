@@ -23,8 +23,6 @@ public class Main {
         System.out.println("WELCOME TO THE EMPLOYEE MANAGEMENT SYSTEM (EMS)\n");
 
         mainMenu();
-
-
     }
 
     public static void mainMenu() {
@@ -157,10 +155,11 @@ public class Main {
             System.out.println("Total Employees: " + list.size());
         }
     }
+
     private static void viewEmployeeByDepartment() {
         try {
-            System.out.println("Please enter employee Department");
-            String department = sc.next();
+
+            String department = getValidatedString("Please enter employee Department");
 
             List<Employee> employees = manager.getEmployeesByDepartment(department);
             if(employees.isEmpty()) {
@@ -180,11 +179,12 @@ public class Main {
 
     }
 
+
    private static void getEmployeeByID() {
         try {
             int Id = getValidatedInteger("Please enter the Employee ID");
 
-           Employee employee = manager.findEmployeeById(Id);
+            Employee employee = manager.findEmployeeById(Id);
             System.out.println("=================================");
             System.out.println("         Employee Details        ");
             System.out.println("=================================");
@@ -249,12 +249,12 @@ public class Main {
                 employee.setDepartment(newDepartment);
             }
 
-            String newSalary = getValidatedInteger(("Enter new Salary (leave blank to keep current name: " + employee.getSalary() + "): ");)
+            String newSalary = String.valueOf(getValidatedInteger("Enter new Salary (leave blank to keep current name: " + employee.getSalary() + "): "));
             if (!newSalary.trim().isEmpty()) {
                 employee.setSalary(Integer.parseInt(newSalary));
             }
 
-            String newEmail = getValidatedEmail(("Enter new Email (leave blank to keep current name: " + employee.getEmail() + "): ");)
+            String newEmail = getValidatedEmail("Enter new Email (leave blank to keep current name: " + employee.getEmail() + "): ");
             if (!newEmail.trim().isEmpty()) {
                 employee.setEmail(newEmail);
             }
