@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class Main {
     private static EmployeeManager manager;
-    private  static EmployeeEmailValidator emailValidator;
+    private static EmployeeEmailValidator emailValidator;
     private static Scanner sc;
 
     public static void main(String[] args) {
@@ -55,24 +55,6 @@ public class Main {
 
     }
 
-    private static int getValidOption(int min, int max) {
-        while (true) {
-            try {
-                System.out.print("Enter your choice: ");
-                int option = sc.nextInt();
-                sc.nextLine();
-
-                if (option >= min && option <= max) {
-                    return option;
-                } else {
-                    System.err.println("Please enter a number between " + min + " and " + max + ".");
-                }
-            } catch (InputMismatchException e) {
-                sc.nextLine();
-                System.err.println("Invalid input. Please enter a number between " + min + " and " + max + ".");
-            }
-        }
-    }
     public static void viewEmployees() {
 
 
@@ -97,6 +79,71 @@ public class Main {
 
         }
 
+    }
+    private static int getValidOption(int min, int max) {
+        while (true) {
+            try {
+                System.out.print("Enter your choice: ");
+                int option = sc.nextInt();
+                sc.nextLine();
+
+                if (option >= min && option <= max) {
+                    return option;
+                } else {
+                    System.err.println("Please enter a number between " + min + " and " + max + ".");
+                }
+            } catch (InputMismatchException e) {
+                sc.nextLine();
+                System.err.println("Invalid input. Please enter a number between " + min + " and " + max + ".");
+            }
+        }
+    }
+
+    private static int getValidatedInteger(String prompt) {
+        int value;
+        while (true) {
+            System.out.println(prompt);
+            if (sc.hasNextInt()) {
+                value = sc.nextInt();
+                sc.nextLine();
+                break;
+            } else {
+                System.err.println("Error: Please enter a valid integer.");
+                sc.nextLine();
+            }
+        }
+        return value;
+    }
+
+    private static String getValidatedString(String prompt) {
+        String value;
+        while (true) {
+            System.out.println(prompt);
+            value = sc.nextLine().trim();
+            if (!value.isEmpty()) {
+                break;
+            } else {
+                System.err.println("Error: Input cannot be empty. Please enter a valid value.");
+            }
+        }
+        return value;
+    }
+    private static String getValidatedEmail(String prompt) {
+        String email;
+        while (true) {
+            System.out.println(prompt);
+            email = sc.nextLine().trim();
+            if(!emailValidator.isValidEmail(email)) {
+                System.err.println("Error: Invalid email format. Please enter invalid email");
+            } else if(!emailValidator.addUniqueEmail(email)) {
+                System.err.println("Error: This email already exist in System. Please enter unique email");
+            } else if (!email.isEmpty())  {
+                break;
+            } else {
+                System.err.println("Error: Input cannot be empty. Please enter a valid email.");
+            }
+        }
+        return email;
     }
     private static void viewAllEmployees() {
         List<Employee> list = manager.getAllEmployees();
@@ -135,8 +182,7 @@ public class Main {
 
    private static void getEmployeeByID() {
         try {
-            System.out.println("Please enter the Employee ID");
-            int Id = sc.nextInt();
+            int Id = getValidatedInteger("Please enter the Employee ID");
 
            Employee employee = manager.findEmployeeById(Id);
             System.out.println("=================================");
@@ -149,68 +195,22 @@ public class Main {
             System.out.printf("Email             : %s%n", employee.getEmail());
             System.out.println("=================================");
 
-        } catch (InputMismatchException e) {
-            System.out.println("Invalid input. Please enter a valid numeric Employee ID.");
-            System.out.println(e);
-            sc.nextLine();
-
         } catch (EmployeeNotFoundException e) {
             System.out.println("Error: " + e.getMessage() + " Employee with ID " + e + " not found.");
-            //throw new RuntimeException(e);
         }
     }
     private static void addEmployee () {
+
         try {
-            System.out.println("Please enter employee ID:");
-            int id;
-            while (true) {
-                System.out.println("Please enter employee ID (integer): ");
-                if (sc.hasNextInt()) {
-                    id = sc.nextInt();
-                    sc.nextLine();
-                    break;
-                } else {
-                    System.err.println("Error: Please enter a valid integer for ID.");
-                    sc.nextLine();
-                }
-            }
+            int id = getValidatedInteger("Please enter employee ID (integer):");
 
+            String department = getValidatedString ("Please enter employee Department:");
 
-            System.out.println("Please enter employee Department:");
-            String department = sc.next();
+            String name = getValidatedString ("Please enter employee Name:");
 
+            int salary =  getValidatedInteger("Please enter employee Salary (integer):");
 
-            System.out.println("Please enter employee Name:");
-            String name = sc.next();
-
-
-
-            System.out.println("Please enter employee  Salary:");
-            int salary;
-            while (true) {
-                System.out.println("Please enter employee ID (integer): ");
-                if (sc.hasNextInt()) {
-                    salary = sc.nextInt();
-                    sc.nextLine();
-                    break;
-                } else {
-                    System.err.println("Error: Please enter a valid integer for ID.");
-                    sc.nextLine();
-                }
-            }
-
-            System.out.println("Please enter employee Email:");
-            String email;
-            while(true) {
-                email = sc.next();
-                if(!emailValidator.isValidEmail(email)) {
-                    System.err.println("Error: Invalid email format. Please enter invalid email");
-                } else if(!emailValidator.addUniqueEmail(email)) {
-                    System.err.println("Error: This email already exist in System. Please enter unique email");
-                } else {
-                    break;
-                }
-            }
+            String email = getValidatedEmail("Please enter employee Email:");
 
             Employee employee = new Employee(id, name, department, salary, email);
             boolean addedSuccessfully =  manager.addEmployee(employee);
@@ -222,8 +222,6 @@ public class Main {
             } else {
                 System.out.printf("Employee with ID %d already exists in the system.%n", employee.getId());
             }
-        } catch (InputMismatchException e) {
-            System.out.println(e);
         } catch (IllegalArgumentException e) {
             System.out.println("Error: " + e.getMessage());
         } catch (EmployeeAlreadyExistsException e) {
@@ -233,39 +231,34 @@ public class Main {
 
    private   static  void updateEmployee() {
         try {
-            System.out.println("Please enter employee ID ");
 
-            if(!sc.hasNextInt()) {
-                System.err.println("Error: Invalid input. Please enter a valid integer for the employee ID.");
-                sc.next();
-                return;
-            }
-            int id = sc.nextInt();
+            int id = getValidatedInteger("Please enter employee ID (integer):");
+
             Employee employee = manager.findEmployeeById(id);
             if(employee == null) {
                 System.out.printf("Employee with ID %d was not found in the system.%n", employee.getId());
             }
-            System.out.print("Enter new name (leave blank to keep current name: " + employee.getName() + "): ");
-            String newName = sc.nextLine();
+
+            String newName = getValidatedString("Enter new name (leave blank to keep current name: " + employee.getName() + "): ");
             if (!newName.trim().isEmpty()) {
                 employee.setName(newName);
             }
 
-            System.out.print("Enter new Department (leave blank to keep current name: " + employee.getDepartment()+ "): ");
-            String newDepartment = sc.nextLine();
+            String newDepartment = getValidatedString("Enter new Department (leave blank to keep current name: " + employee.getDepartment()+ "): ");
             if (!newDepartment.trim().isEmpty()) {
                 employee.setDepartment(newDepartment);
             }
-            System.out.print("Enter new Salary (leave blank to keep current name: " + employee.getSalary() + "): ");
-            String newSalary = sc.nextLine();
+
+            String newSalary = getValidatedInteger(("Enter new Salary (leave blank to keep current name: " + employee.getSalary() + "): ");)
             if (!newSalary.trim().isEmpty()) {
                 employee.setSalary(Integer.parseInt(newSalary));
             }
-            System.out.print("Enter new Email (leave blank to keep current name: " + employee.getEmail() + "): ");
-            String newEmail = sc.nextLine();
+
+            String newEmail = getValidatedEmail(("Enter new Email (leave blank to keep current name: " + employee.getEmail() + "): ");)
             if (!newEmail.trim().isEmpty()) {
                 employee.setEmail(newEmail);
             }
+
             boolean updatedEmployee = manager.updateEmployee(employee);
             if(updatedEmployee) {
                 System.out.printf("Employee with ID %d was successful updated in the system.%n", employee.getId());
@@ -273,9 +266,6 @@ public class Main {
                 System.out.println("Error:  Failed to update Employee ID " + id);
             }
 
-        } catch (InputMismatchException e)
-        {
-            System.out.println("Invalid input. Please enter a valid numeric Employee ID.");
         } catch (EmployeeNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -283,14 +273,7 @@ public class Main {
     }
     private static void removeEmployee() {
         try {
-            System.out.println("Please enter employee ID ");
-
-            if(!sc.hasNextInt()) {
-                System.err.println("Error: Invalid input. Please enter a valid integer for the employee ID.");
-                sc.next();
-                return;
-            }
-            int id = sc.nextInt();
+            int id = getValidatedInteger("Please enter employee ID (integer):");
 
             boolean removedSuccessfully = manager.removeEmployeeById(id);
 
@@ -304,6 +287,5 @@ public class Main {
         }
 
     }
-
 
 }
