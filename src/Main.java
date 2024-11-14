@@ -1,6 +1,7 @@
 import Exeption.EmployeeAlreadyExistsException;
 import Exeption.EmployeeNotFoundException;
 import model.Employee;
+import util.EmployeeEmailValidator;
 import util.EmployeeManager;
 import util.EmployeeManagerInMemory;
 
@@ -10,6 +11,7 @@ import java.util.Scanner;
 
 public class Main {
     private static EmployeeManager manager;
+    private  static EmployeeEmailValidator emailValidator;
     private static Scanner sc;
 
     public static void main(String[] args) {
@@ -159,24 +161,56 @@ public class Main {
     }
     private static void addEmployee () {
         try {
-            System.out.println("Please enter employee ID ");
-            int id = sc.nextInt();
+            System.out.println("Please enter employee ID:");
+            int id;
+            while (true) {
+                System.out.println("Please enter employee ID (integer): ");
+                if (sc.hasNextInt()) {
+                    id = sc.nextInt();
+                    sc.nextLine();
+                    break;
+                } else {
+                    System.err.println("Error: Please enter a valid integer for ID.");
+                    sc.nextLine();
+                }
+            }
 
 
-            System.out.println("Please enter employee Department");
+            System.out.println("Please enter employee Department:");
             String department = sc.next();
 
 
-            System.out.println("Please enter employee Name ");
+            System.out.println("Please enter employee Name:");
             String name = sc.next();
 
 
-            System.out.println("Please enter employee  Salary");
-            int salary = sc.nextInt();
 
+            System.out.println("Please enter employee  Salary:");
+            int salary;
+            while (true) {
+                System.out.println("Please enter employee ID (integer): ");
+                if (sc.hasNextInt()) {
+                    salary = sc.nextInt();
+                    sc.nextLine();
+                    break;
+                } else {
+                    System.err.println("Error: Please enter a valid integer for ID.");
+                    sc.nextLine();
+                }
+            }
 
-            System.out.println("Please enter employee Email");
-            String email = sc.next();
+            System.out.println("Please enter employee Email:");
+            String email;
+            while(true) {
+                email = sc.next();
+                if(!emailValidator.isValidEmail(email)) {
+                    System.err.println("Error: Invalid email format. Please enter invalid email");
+                } else if(!emailValidator.addUniqueEmail(email)) {
+                    System.err.println("Error: This email already exist in System. Please enter unique email");
+                } else {
+                    break;
+                }
+            }
 
             Employee employee = new Employee(id, name, department, salary, email);
             boolean addedSuccessfully =  manager.addEmployee(employee);
